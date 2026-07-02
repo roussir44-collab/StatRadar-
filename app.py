@@ -18,17 +18,17 @@ html, body, [class*="css"] {
     direction: rtl;
 }
 .block-container {
-    padding-top: 1.5rem;
+    padding-top: 1.2rem;
     padding-bottom: 2rem;
-    max-width: 1200px;
+    max-width: 1180px;
 }
 .hero {
-    background: linear-gradient(135deg, #111827, #0f172a);
+    background: linear-gradient(135deg, #0f172a, #111827);
     padding: 28px;
-    border-radius: 22px;
+    border-radius: 24px;
     color: white;
-    margin-bottom: 18px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    margin-bottom: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.16);
 }
 .hero-title {
     font-size: 34px;
@@ -38,15 +38,41 @@ html, body, [class*="css"] {
 .hero-sub {
     color: #d1d5db;
     font-size: 15px;
-    line-height: 1.8;
+    line-height: 1.9;
+}
+.trust-strip {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+.trust-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    height: 100%;
+}
+.trust-item-title {
+    font-weight: 800;
+    font-size: 15px;
+    color: #111827;
+    margin-bottom: 4px;
+}
+.trust-item-sub {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.7;
 }
 .offer-box {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
     color: #111827;
-    border-radius: 20px;
+    border-radius: 22px;
     padding: 22px;
-    margin: 18px 0 20px 0;
-    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+    margin: 16px 0 14px 0;
+    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.22);
 }
 .offer-title {
     font-size: 28px;
@@ -55,7 +81,7 @@ html, body, [class*="css"] {
 }
 .offer-sub {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 14px;
 }
 .offer-code {
@@ -67,6 +93,25 @@ html, body, [class*="css"] {
     text-align: center;
     letter-spacing: 1px;
     margin-bottom: 14px;
+}
+.steps-box {
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+    border-radius: 18px;
+    padding: 16px;
+    margin: 10px 0 18px 0;
+}
+.steps-title {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #9a3412;
+}
+.step-line {
+    font-size: 14px;
+    color: #7c2d12;
+    line-height: 1.9;
+    margin-bottom: 4px;
 }
 .match-card {
     background: white;
@@ -105,7 +150,7 @@ html, body, [class*="css"] {
     margin-bottom: 10px;
 }
 .box-title {
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 6px;
     color: #111827;
 }
@@ -142,6 +187,17 @@ html, body, [class*="css"] {
     color: #4b5563;
     margin-top: 10px;
     line-height: 1.8;
+}
+.section-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin: 16px 0 10px 0;
+}
+.soft-note {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -429,10 +485,33 @@ st.markdown("""
 <div class="hero">
     <div class="hero-title">⚽ StatRadar AI</div>
     <div class="hero-sub">
-        تابع مباريات اليوم، واكتشف التوصية الأقوى، وتوصيات إضافية مبنية على بيانات المباريات السابقة بشكل أوضح وأسهل.
+        تحليلات مباريات اليوم بطريقة أوضح، مع التوصية الأقوى، وتوصيات إضافية مبنية على أداء الفرق في آخر المباريات.
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+trust1, trust2, trust3 = st.columns(3)
+with trust1:
+    st.markdown("""
+    <div class="trust-item">
+        <div class="trust-item-title">تحليل مبني على بيانات</div>
+        <div class="trust-item-sub">نستخدم نتائج آخر المباريات وترتيب البطولة لإخراج توصيات أوضح.</div>
+    </div>
+    """, unsafe_allow_html=True)
+with trust2:
+    st.markdown("""
+    <div class="trust-item">
+        <div class="trust-item-title">توصيات متعددة</div>
+        <div class="trust-item-sub">التوصية الأقوى، أكثر من 1.5، أكثر من 2.5، وتسجيل كلا الفريقين.</div>
+    </div>
+    """, unsafe_allow_html=True)
+with trust3:
+    st.markdown("""
+    <div class="trust-item">
+        <div class="trust-item-title">واجهة بسيطة وواضحة</div>
+        <div class="trust-item-sub">الفريقان ظاهرين بالاسم مباشرة، مع قراءة سريعة وسهلة لكل مباراة.</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown(f"""
 <div class="offer-box">
@@ -440,17 +519,28 @@ st.markdown(f"""
     <div class="offer-sub">مكافأة التسجيل</div>
     <div class="offer-code">{PROMO_CODE}</div>
     <div style="font-size:15px;font-weight:700; line-height:1.9;">
-        مهم: باش تستفيد من العرض، لازم تفتح التسجيل من الرابط الرسمي الموجود هنا،
-        وبعدها تدخل هذا البرومو كود أثناء إنشاء الحساب.
+        باش تستفيد من العرض، افتح التسجيل من الرابط الرسمي الموجود هنا، ثم أدخل هذا البرومو كود أثناء إنشاء الحساب.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-col_offer1, col_offer2 = st.columns(2)
-with col_offer1:
+cta1, cta2 = st.columns([1.2, 1], gap="medium")
+with cta1:
     st.link_button("افتح التسجيل من هذا الرابط", MAIN_AFFILIATE_LINK, use_container_width=True)
-with col_offer2:
+with cta2:
     copy_button_component(PROMO_CODE, "انسخ الكود قبل التسجيل")
+
+st.markdown("""
+<div class="steps-box">
+    <div class="steps-title">كيف تستفيد من العرض؟</div>
+    <div class="step-line">1) افتح التسجيل من الرابط الرسمي.</div>
+    <div class="step-line">2) انسخ البرومو كود.</div>
+    <div class="step-line">3) أدخل الكود أثناء إنشاء الحساب.</div>
+</div>
+""", unsafe_allow_html=True)
+
+with st.expander("كيف نحسب التوصيات؟"):
+    st.write("التوصيات مبنية على نتائج آخر مباريات الفريقين، معدل التسجيل، معدل استقبال الأهداف، وترتيب الفريقين في البطولة. هذه قراءة تحليلية مبنية على البيانات المتاحة، وليست ضمانًا للنتيجة النهائية.")[web:277][web:420]
 
 st.markdown("""
 <div class="disclosure">
@@ -458,7 +548,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
+st.markdown('<div class="section-title">مباريات اليوم</div>', unsafe_allow_html=True)
+st.markdown('<div class="soft-note">اختر أي مباراة لعرض القراءة الكاملة والتوصيات المتاحة.</div>', unsafe_allow_html=True)
 
 try:
     matches = get_today_matches()
@@ -466,8 +557,6 @@ try:
     if not matches:
         st.warning("لا توجد مباريات متاحة اليوم.")
     else:
-        st.info(f"عدد المباريات المتاحة اليوم: {len(matches)}")
-
         for match in matches:
             home = match.get("homeTeam", {}).get("name", "غير معروف")
             away = match.get("awayTeam", {}).get("name", "غير معروف")
@@ -481,7 +570,7 @@ try:
             st.markdown(f'<div class="meta">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="badge">الحالة: {status}</div>', unsafe_allow_html=True)
 
-            if st.button("تحليل المباراة", key=f"analyze_{match.get('id')}"):
+            if st.button("عرض التحليل", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
                 top_pick = analysis["predictions"][0]
                 second_pick = analysis["predictions"][1]
@@ -491,9 +580,9 @@ try:
 
                 with tab1:
                     c1, c2, c3 = st.columns(3)
-                    c1.metric(f"{home}", f"{analysis['home_prob']}%")
+                    c1.metric(home, f"{analysis['home_prob']}%")
                     c2.metric("تعادل", f"{analysis['draw_prob']}%")
-                    c3.metric(f"{away}", f"{analysis['away_prob']}%")
+                    c3.metric(away, f"{analysis['away_prob']}%")
 
                     st.markdown(
                         f'<div class="box"><div class="box-title">قراءة المباراة</div>{analysis["winner_pick"]}</div>',
@@ -546,7 +635,7 @@ try:
                         unsafe_allow_html=True
                     )
 
-                    mini1, mini2 = st.columns(2)
+                    mini1, mini2 = st.columns([1.2, 1], gap="medium")
                     with mini1:
                         st.link_button("افتح التسجيل الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
                     with mini2:
