@@ -12,72 +12,91 @@ HEADERS = {"X-Auth-Token": API_TOKEN}
 PROMO_CODE = "GA3NERBHOU"
 MAIN_AFFILIATE_LINK = "https://refpa3665.com/L?tag=d_5731021m_59351c_&site=5731021&ad=59351"
 
+
 st.markdown("""
 <style>
 html, body, [class*="css"] {
     direction: rtl;
 }
+
 .block-container {
-    padding-top: 1.2rem;
-    padding-bottom: 2rem;
     max-width: 1180px;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
 }
+
+.main {
+    background: #f6f8fb;
+}
+
+/* HERO */
 .hero {
-    background: linear-gradient(135deg, #0f172a, #111827);
+    background: linear-gradient(135deg, #0f172a 0%, #111827 55%, #1e293b 100%);
+    border-radius: 26px;
     padding: 28px;
-    border-radius: 24px;
     color: white;
-    margin-bottom: 14px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+    margin-bottom: 16px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.10);
+    color: #f8fafc;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 .hero-title {
-    font-size: 34px;
-    font-weight: 800;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.3;
     margin-bottom: 8px;
 }
 .hero-sub {
-    color: #d1d5db;
+    color: #cbd5e1;
     font-size: 15px;
     line-height: 1.9;
+    max-width: 820px;
 }
-.trust-strip {
-    background: #f8fafc;
+
+/* TRUST */
+.trust-card {
+    background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 18px;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-}
-.trust-item {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 14px;
-    text-align: center;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
     height: 100%;
 }
-.trust-item-title {
-    font-weight: 800;
+.trust-title {
     font-size: 15px;
+    font-weight: 800;
     color: #111827;
     margin-bottom: 4px;
 }
-.trust-item-sub {
+.trust-sub {
     font-size: 13px;
     color: #6b7280;
-    line-height: 1.7;
+    line-height: 1.8;
 }
+
+/* OFFER */
 .offer-box {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     color: #111827;
-    border-radius: 22px;
+    border-radius: 24px;
     padding: 22px;
-    margin: 16px 0 14px 0;
-    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.22);
+    margin: 18px 0 12px 0;
+    box-shadow: 0 14px 28px rgba(245, 158, 11, 0.24);
+    border: 1px solid rgba(255,255,255,0.35);
 }
 .offer-title {
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 6px;
+    font-size: 30px;
+    font-weight: 900;
+    margin-bottom: 4px;
 }
 .offer-sub {
     font-size: 16px;
@@ -85,27 +104,34 @@ html, body, [class*="css"] {
     margin-bottom: 14px;
 }
 .offer-code {
-    background: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(255,255,255,0.7);
     padding: 14px 18px;
-    border-radius: 14px;
-    font-size: 24px;
-    font-weight: 800;
+    border-radius: 16px;
     text-align: center;
+    font-size: 25px;
+    font-weight: 900;
     letter-spacing: 1px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
+.offer-text {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.9;
+}
+
 .steps-box {
     background: #fff7ed;
     border: 1px solid #fdba74;
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 16px;
-    margin: 10px 0 18px 0;
+    margin: 12px 0 18px 0;
 }
 .steps-title {
     font-size: 17px;
-    font-weight: 800;
-    margin-bottom: 8px;
+    font-weight: 900;
     color: #9a3412;
+    margin-bottom: 8px;
 }
 .step-line {
     font-size: 14px;
@@ -113,46 +139,71 @@ html, body, [class*="css"] {
     line-height: 1.9;
     margin-bottom: 4px;
 }
-.match-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-}
-.match-title {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 10px;
+
+/* SECTION */
+.section-title {
+    font-size: 22px;
+    font-weight: 900;
     color: #111827;
+    margin: 18px 0 8px 0;
 }
-.meta {
+.soft-note {
     color: #6b7280;
     font-size: 14px;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
 }
-.badge {
+
+/* MATCH CARD */
+.match-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+.match-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.match-title {
+    font-size: 25px;
+    font-weight: 900;
+    color: #111827;
+    line-height: 1.4;
+}
+.match-status {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 7px 12px;
     background: #eef2ff;
     color: #3730a3;
     border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 800;
 }
-.box {
+.meta-row {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* BOXES */
+.info-box {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
-.box-title {
-    font-weight: 800;
-    margin-bottom: 6px;
+.info-title {
+    font-weight: 900;
+    font-size: 15px;
     color: #111827;
+    margin-bottom: 6px;
 }
 .mini-offer {
     background: #fff7ed;
@@ -162,45 +213,64 @@ html, body, [class*="css"] {
     margin-top: 12px;
 }
 .mini-offer-title {
-    font-weight: 800;
+    font-weight: 900;
     font-size: 18px;
     margin-bottom: 6px;
     color: #9a3412;
 }
+
+/* COPY BUTTON */
 .copy-btn-wrap {
     margin-top: 8px;
     margin-bottom: 8px;
 }
 .copy-button {
+    width: 100%;
     background: #111827;
-    color: white;
+    color: #ffffff;
     border: none;
     border-radius: 12px;
-    padding: 10px 16px;
+    padding: 11px 14px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
-    width: 100%;
 }
+
+/* FOOTER NOTE */
 .disclosure {
     font-size: 12px;
     color: #4b5563;
+    line-height: 1.9;
     margin-top: 10px;
-    line-height: 1.8;
 }
-.section-title {
-    font-size: 22px;
+
+/* METRICS TWEAK */
+[data-testid="stMetric"] {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 10px 12px;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+}
+
+/* BUTTONS */
+div.stButton > button {
+    border-radius: 12px;
     font-weight: 800;
-    color: #111827;
-    margin: 16px 0 10px 0;
 }
-.soft-note {
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 10px;
+
+/* TABS */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+}
+.stTabs [data-baseweb="tab"] {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 14px;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 @st.cache_data(ttl=300)
 def api_get(endpoint, params=None):
@@ -213,10 +283,12 @@ def api_get(endpoint, params=None):
     response.raise_for_status()
     return response.json()
 
+
 @st.cache_data(ttl=300)
 def get_today_matches():
     data = api_get("/matches")
     return data.get("matches", [])
+
 
 @st.cache_data(ttl=1800)
 def get_team_finished_matches(team_id, limit=6):
@@ -226,15 +298,18 @@ def get_team_finished_matches(team_id, limit=6):
     )
     return data.get("matches", [])
 
+
 @st.cache_data(ttl=1800)
 def get_competition_standings(comp_code):
     if not comp_code:
         return []
+
     data = api_get(f"/competitions/{comp_code}/standings")
     standings = data.get("standings", [])
     if standings:
         return standings[0].get("table", [])
     return []
+
 
 def format_time(utc_date):
     try:
@@ -242,6 +317,7 @@ def format_time(utc_date):
         return dt.strftime("%Y-%m-%d %H:%M UTC")
     except Exception:
         return utc_date
+
 
 def extract_team_form(matches, team_id):
     played = 0
@@ -293,6 +369,7 @@ def extract_team_form(matches, team_id):
         "form_points": form_points
     }
 
+
 def calc_goal_markets(matches, team_id):
     played = 0
     over_15 = 0
@@ -339,6 +416,7 @@ def calc_goal_markets(matches, team_id):
         "btts_rate": round((btts_yes / played) * 100)
     }
 
+
 def pick_confidence_label(value):
     if value >= 75:
         return "عالية"
@@ -347,12 +425,14 @@ def pick_confidence_label(value):
     else:
         return "ضعيفة"
 
+
 def get_position(standings_table, team_id):
     for row in standings_table:
         team = row.get("team", {})
         if team.get("id") == team_id:
             return row.get("position"), row.get("points"), row.get("goalDifference")
     return None, None, None
+
 
 def analyze_match(match):
     home = match.get("homeTeam", {})
@@ -459,6 +539,7 @@ def analyze_match(match):
         "predictions": predictions
     }
 
+
 def get_stat(match, keys):
     current = match
     for key in keys:
@@ -468,8 +549,9 @@ def get_stat(match, keys):
             return None
     return current
 
+
 def copy_button_component(text_to_copy, button_text="نسخ الكود"):
-    safe_text = text_to_copy.replace("'", "\\'")
+    safe_text = text_to_copy.replace("\\", "\\\\").replace("'", "\\'")
     components.html(
         f"""
         <div class="copy-btn-wrap">
@@ -481,11 +563,14 @@ def copy_button_component(text_to_copy, button_text="نسخ الكود"):
         height=55,
     )
 
+
 st.markdown("""
 <div class="hero">
-    <div class="hero-title">⚽ StatRadar AI</div>
+    <div class="hero-badge">StatRadar AI</div>
+    <div class="hero-title">تحليلات مباريات اليوم بشكل أوضح وأكثر احترافية</div>
     <div class="hero-sub">
-        تحليلات مباريات اليوم بطريقة أوضح، مع التوصية الأقوى، وتوصيات إضافية مبنية على أداء الفرق في آخر المباريات.
+        اكتشف التوصية الأقوى، وشاهد توصيات إضافية مبنية على أداء الفرق في آخر المباريات،
+        مع واجهة أبسط وأوضح لتسهيل اتخاذ القرار.
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -493,23 +578,23 @@ st.markdown("""
 trust1, trust2, trust3 = st.columns(3)
 with trust1:
     st.markdown("""
-    <div class="trust-item">
-        <div class="trust-item-title">تحليل مبني على بيانات</div>
-        <div class="trust-item-sub">نستخدم نتائج آخر المباريات وترتيب البطولة لإخراج توصيات أوضح.</div>
+    <div class="trust-card">
+        <div class="trust-title">تحليل مبني على بيانات</div>
+        <div class="trust-sub">نستخدم نتائج آخر المباريات، معدل التسجيل، واستقبال الأهداف لترتيب التوصيات.</div>
     </div>
     """, unsafe_allow_html=True)
 with trust2:
     st.markdown("""
-    <div class="trust-item">
-        <div class="trust-item-title">توصيات متعددة</div>
-        <div class="trust-item-sub">التوصية الأقوى، أكثر من 1.5، أكثر من 2.5، وتسجيل كلا الفريقين.</div>
+    <div class="trust-card">
+        <div class="trust-title">توصيات متعددة</div>
+        <div class="trust-sub">التوصية الأقوى، أكثر من 1.5، أكثر من 2.5، وتسجيل كلا الفريقين في مكان واحد.</div>
     </div>
     """, unsafe_allow_html=True)
 with trust3:
     st.markdown("""
-    <div class="trust-item">
-        <div class="trust-item-title">واجهة بسيطة وواضحة</div>
-        <div class="trust-item-sub">الفريقان ظاهرين بالاسم مباشرة، مع قراءة سريعة وسهلة لكل مباراة.</div>
+    <div class="trust-card">
+        <div class="trust-title">واجهة أسهل</div>
+        <div class="trust-sub">أسماء الفرق ظاهرة بوضوح، مع قراءة سريعة وسهلة لكل مباراة بدون تعقيد.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -518,7 +603,7 @@ st.markdown(f"""
     <div class="offer-title">استفد من العرض</div>
     <div class="offer-sub">مكافأة التسجيل</div>
     <div class="offer-code">{PROMO_CODE}</div>
-    <div style="font-size:15px;font-weight:700; line-height:1.9;">
+    <div class="offer-text">
         باش تستفيد من العرض، افتح التسجيل من الرابط الرسمي الموجود هنا، ثم أدخل هذا البرومو كود أثناء إنشاء الحساب.
     </div>
 </div>
@@ -540,7 +625,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.expander("كيف نحسب التوصيات؟"):
-    st.write("التوصيات مبنية على نتائج آخر مباريات الفريقين، معدل التسجيل، معدل استقبال الأهداف، وترتيب الفريقين في البطولة. هذه قراءة تحليلية مبنية على البيانات المتاحة، وليست ضمانًا للنتيجة النهائية.")[web:277][web:420]
+    st.write(
+        "التوصيات مبنية على نتائج آخر مباريات الفريقين، معدل التسجيل، معدل استقبال الأهداف، "
+        "وترتيب الفريقين في البطولة. هذه قراءة تحليلية مبنية على البيانات المتاحة، "
+        "وليست ضمانًا للنتيجة النهائية."
+    )
 
 st.markdown("""
 <div class="disclosure">
@@ -549,7 +638,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="section-title">مباريات اليوم</div>', unsafe_allow_html=True)
-st.markdown('<div class="soft-note">اختر أي مباراة لعرض القراءة الكاملة والتوصيات المتاحة.</div>', unsafe_allow_html=True)
+st.markdown('<div class="soft-note">اختر أي مباراة لعرض التحليل الكامل والتوصيات المتاحة.</div>', unsafe_allow_html=True)
 
 try:
     matches = get_today_matches()
@@ -565,10 +654,17 @@ try:
             status = match.get("status", "غير معروف")
 
             st.markdown('<div class="match-card">', unsafe_allow_html=True)
-            st.markdown(f'<div class="match-title">{home} × {away}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="meta">البطولة: {competition}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="meta">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="badge">الحالة: {status}</div>', unsafe_allow_html=True)
+            st.markdown(
+                f'''
+                <div class="match-topline">
+                    <div class="match-title">{home} × {away}</div>
+                    <div class="match-status">{status}</div>
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
+            st.markdown(f'<div class="meta-row">البطولة: {competition}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="meta-row">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
 
             if st.button("عرض التحليل", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
@@ -580,42 +676,64 @@ try:
 
                 with tab1:
                     c1, c2, c3 = st.columns(3)
-                    c1.metric(home, f"{analysis['home_prob']}%")
-                    c2.metric("تعادل", f"{analysis['draw_prob']}%")
-                    c3.metric(away, f"{analysis['away_prob']}%")
+                    with c1:
+                        st.metric(home, f"{analysis['home_prob']}%")
+                    with c2:
+                        st.metric("تعادل", f"{analysis['draw_prob']}%")
+                    with c3:
+                        st.metric(away, f"{analysis['away_prob']}%")
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">قراءة المباراة</div>{analysis["winner_pick"]}</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">قراءة المباراة</div>
+                            {analysis["winner_pick"]}
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">التوصية الأقوى</div>'
-                        f'{top_pick["title"]} — مستوى الثقة: {top_pick["confidence"]} ({top_pick["score"]}%)<br>'
-                        f'{top_pick["reason"]}'
-                        f'</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">التوصية الأقوى</div>
+                            {top_pick["title"]} — مستوى الثقة: {top_pick["confidence"]} ({top_pick["score"]}%)<br>
+                            {top_pick["reason"]}
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">توصيات إضافية</div>'
-                        f'1) {second_pick["title"]} — {second_pick["confidence"]} ({second_pick["score"]}%)<br>'
-                        f'2) {third_pick["title"]} — {third_pick["confidence"]} ({third_pick["score"]}%)'
-                        f'</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">توصيات إضافية</div>
+                            1) {second_pick["title"]} — {second_pick["confidence"]} ({second_pick["score"]}%)<br>
+                            2) {third_pick["title"]} — {third_pick["confidence"]} ({third_pick["score"]}%)
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">مستوى الثقة العام</div>{analysis["confidence"]}%</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">مستوى الثقة العام</div>
+                            {analysis["confidence"]}%
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
                     if analysis["home_pos"] and analysis["away_pos"]:
                         st.markdown(
-                            f'<div class="box"><div class="box-title">الترتيب الحالي</div>'
-                            f'{home}: المركز {analysis["home_pos"]} - {analysis["home_pts"]} نقطة<br>'
-                            f'{away}: المركز {analysis["away_pos"]} - {analysis["away_pts"]} نقطة'
-                            f'</div>',
+                            f'''
+                            <div class="info-box">
+                                <div class="info-title">الترتيب الحالي</div>
+                                {home}: المركز {analysis["home_pos"]} - {analysis["home_pts"]} نقطة<br>
+                                {away}: المركز {analysis["away_pos"]} - {analysis["away_pts"]} نقطة
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
 
@@ -623,8 +741,8 @@ try:
                         f'''
                         <div class="mini-offer">
                             <div class="mini-offer-title">استفد من العرض</div>
-                            <div style="font-weight:700;margin-bottom:8px;">مكافأة التسجيل</div>
-                            <div style="background:#fff;padding:10px 12px;border-radius:10px;font-weight:800;text-align:center;">
+                            <div style="font-weight:800;margin-bottom:8px;">مكافأة التسجيل</div>
+                            <div style="background:#fff;padding:10px 12px;border-radius:12px;font-weight:900;text-align:center;">
                                 {PROMO_CODE}
                             </div>
                             <div style="font-size:14px;margin-top:8px; line-height:1.8;">
@@ -643,24 +761,30 @@ try:
 
                 with tab2:
                     st.markdown(
-                        f'<div class="box"><div class="box-title">{home}</div>'
-                        f'فوز: {analysis["home_form"]["wins"]} | '
-                        f'تعادل: {analysis["home_form"]["draws"]} | '
-                        f'خسارة: {analysis["home_form"]["losses"]}<br>'
-                        f'معدل التسجيل: {analysis["home_form"]["avg_for"]:.2f}<br>'
-                        f'معدل استقبال الأهداف: {analysis["home_form"]["avg_against"]:.2f}'
-                        f'</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">{home}</div>
+                            فوز: {analysis["home_form"]["wins"]} |
+                            تعادل: {analysis["home_form"]["draws"]} |
+                            خسارة: {analysis["home_form"]["losses"]}<br>
+                            معدل التسجيل: {analysis["home_form"]["avg_for"]:.2f}<br>
+                            معدل استقبال الأهداف: {analysis["home_form"]["avg_against"]:.2f}
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">{away}</div>'
-                        f'فوز: {analysis["away_form"]["wins"]} | '
-                        f'تعادل: {analysis["away_form"]["draws"]} | '
-                        f'خسارة: {analysis["away_form"]["losses"]}<br>'
-                        f'معدل التسجيل: {analysis["away_form"]["avg_for"]:.2f}<br>'
-                        f'معدل استقبال الأهداف: {analysis["away_form"]["avg_against"]:.2f}'
-                        f'</div>',
+                        f'''
+                        <div class="info-box">
+                            <div class="info-title">{away}</div>
+                            فوز: {analysis["away_form"]["wins"]} |
+                            تعادل: {analysis["away_form"]["draws"]} |
+                            خسارة: {analysis["away_form"]["losses"]}<br>
+                            معدل التسجيل: {analysis["away_form"]["avg_for"]:.2f}<br>
+                            معدل استقبال الأهداف: {analysis["away_form"]["avg_against"]:.2f}
+                        </div>
+                        ''',
                         unsafe_allow_html=True
                     )
 
@@ -674,34 +798,64 @@ try:
 
                     if corners_home is not None and corners_away is not None:
                         st.markdown(
-                            f'<div class="box"><div class="box-title">الركنيات</div>{home}: {corners_home} | {away}: {corners_away}</div>',
+                            f'''
+                            <div class="info-box">
+                                <div class="info-title">الركنيات</div>
+                                {home}: {corners_home} | {away}: {corners_away}
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
                     else:
                         st.markdown(
-                            '<div class="box"><div class="box-title">الركنيات</div>غير متاحة حاليًا</div>',
+                            '''
+                            <div class="info-box">
+                                <div class="info-title">الركنيات</div>
+                                غير متاحة حاليًا
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
 
                     if yellow_home is not None and yellow_away is not None:
                         st.markdown(
-                            f'<div class="box"><div class="box-title">البطاقات الصفراء</div>{home}: {yellow_home} | {away}: {yellow_away}</div>',
+                            f'''
+                            <div class="info-box">
+                                <div class="info-title">البطاقات الصفراء</div>
+                                {home}: {yellow_home} | {away}: {yellow_away}
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
                     else:
                         st.markdown(
-                            '<div class="box"><div class="box-title">البطاقات الصفراء</div>غير متاحة حاليًا</div>',
+                            '''
+                            <div class="info-box">
+                                <div class="info-title">البطاقات الصفراء</div>
+                                غير متاحة حاليًا
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
 
                     if shots_home is not None and shots_away is not None:
                         st.markdown(
-                            f'<div class="box"><div class="box-title">التسديدات على المرمى</div>{home}: {shots_home} | {away}: {shots_away}</div>',
+                            f'''
+                            <div class="info-box">
+                                <div class="info-title">التسديدات على المرمى</div>
+                                {home}: {shots_home} | {away}: {shots_away}
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
                     else:
                         st.markdown(
-                            '<div class="box"><div class="box-title">التسديدات على المرمى</div>غير متاحة حاليًا</div>',
+                            '''
+                            <div class="info-box">
+                                <div class="info-title">التسديدات على المرمى</div>
+                                غير متاحة حاليًا
+                            </div>
+                            ''',
                             unsafe_allow_html=True
                         )
 
