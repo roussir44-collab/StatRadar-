@@ -9,32 +9,32 @@ BASE_URL = "https://api.football-data.org/v4"
 HEADERS = {"X-Auth-Token": API_TOKEN}
 
 st.markdown("""
-    <style>
-    .main {
-        direction: rtl;
-    }
-    .match-card {
-        background: #f7f9fc;
-        border: 1px solid #e6eaf1;
-        border-radius: 16px;
-        padding: 18px;
-        margin-bottom: 16px;
-    }
-    .small-muted {
-        color: #6b7280;
-        font-size: 14px;
-    }
-    .team-line {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-    .section-title {
-        font-size: 30px;
-        font-weight: 800;
-        margin-bottom: 8px;
-    }
-    </style>
+<style>
+.main {
+    direction: rtl;
+}
+.match-card {
+    background: #f7f9fc;
+    border: 1px solid #e6eaf1;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+.small-muted {
+    color: #6b7280;
+    font-size: 14px;
+}
+.team-line {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.section-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+</style>
 """, unsafe_allow_html=True)
 
 @st.cache_data(ttl=300)
@@ -75,13 +75,16 @@ def format_time(utc_date):
     try:
         dt = datetime.fromisoformat(utc_date.replace("Z", "+00:00"))
         return dt.strftime("%Y-%m-%d %H:%M UTC")
-    except:
+    except Exception:
         return utc_date
 
 def extract_team_form(matches, team_id):
     played = 0
-    wins = draws = losses = 0
-    goals_for = goals_against = 0
+    wins = 0
+    draws = 0
+    losses = 0
+    goals_for = 0
+    goals_against = 0
 
     for m in matches:
         home_id = m.get("homeTeam", {}).get("id")
@@ -259,21 +262,21 @@ try:
             shots_away = get_stat(match, ["statistics", "shotsOnTarget", "away"])
 
             st.write("**إحصائيات المباراة:**")
-            st.write(
-                f"- الركنيات: {home} {corners_home} | {away} {corners_away}"
-                if corners_home is not None and corners_away is not None
-                else "- الركنيات: غير متاحة في الخطة الحالية"
-            )
-            st.write(
-                f"- البطاقات الصفراء: {home} {yellow_home} | {away} {yellow_away}"
-                if yellow_home is not None and yellow_away is not None
-                else "- البطاقات الصفراء: غير متاحة في الخطة الحالية"
-            )
-            st.write(
-                f"- التسديدات على المرمى: {home} {shots_home} | {away} {shots_away}"
-                if shots_home is not None and shots_away is not None
-                else "- التسديدات على المرمى: غير متاحة في الخطة الحالية"
-            )
+
+            if corners_home is not None and corners_away is not None:
+                st.write(f"- الركنيات: {home} {corners_home} | {away} {corners_away}")
+            else:
+                st.write("- الركنيات: غير متاحة في الخطة الحالية")
+
+            if yellow_home is not None and yellow_away is not None:
+                st.write(f"- البطاقات الصفراء: {home} {yellow_home} | {away} {yellow_away}")
+            else:
+                st.write("- البطاقات الصفراء: غير متاحة في الخطة الحالية")
+
+            if shots_home is not None and shots_away is not None:
+                st.write(f"- التسديدات على المرمى: {home} {shots_home} | {away} {shots_away}")
+            else:
+                st.write("- التسديدات على المرمى: غير متاحة في الخطة الحالية")
 
             if st.button("تحليل المباراة", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
@@ -288,6 +291,34 @@ try:
                 )
 
                 st.write("**فورمة آخر المباريات:**")
+
                 st.write(
                     f"- {home}: {analysis['home_form']['wins']} فوز / "
-                    f"{analysis['home_form']['draws']} تعادل
+                    f"{analysis['home_form']['draws']} تعادل / "
+                    f"{analysis['home_form']['losses']} خسارة | "
+                    f"معدل التسجيل {analysis['home_form']['avg_for']:.2f} | "
+                    f"معدل استقبال الأهداف {analysis['home_form']['avg_against']:.2f}"
+                )
+
+                st.write(
+                    f"- {away}: {analysis['away_form']['wins']} فوز / "
+                    f"{analysis['away_form']['draws']} تعادل / "
+                    f"{analysis['away_form']['losses']} خسارة | "
+                    f"معدل التسجيل {analysis['away_form']['avg_for']:.2f} | "
+                    f"معدل استقبال الأهداف {analysis['away_form']['avg_against']:.2f}"
+                )
+
+                if analysis["home_pos"] and analysis["away_pos"]:
+                    st.write(
+                        f"**الترتيب:** {home} #{analysis['home_pos']} ({analysis['home_pts']} نقطة) | "
+                        f"{away} #{analysis['away_pos']} ({analysis['away_pts']} نقطة)"
+                    )
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+except requests.exceptions.HTTPError as e:
+    st.error(f"خطأ HTTP: {e}")
+except requests.exceptions.RequestException as e:
+    st.error(f"خطأ في الاتصال: {e}")
+except Exception as e:
+    st.error(f"خطأ غير متوقع: {e}")
