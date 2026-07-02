@@ -141,7 +141,7 @@ html, body, [class*="css"] {
     font-size: 12px;
     color: #4b5563;
     margin-top: 10px;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -439,19 +439,22 @@ st.markdown(f"""
     <div class="offer-title">استفد من العرض</div>
     <div class="offer-sub">مكافأة التسجيل</div>
     <div class="offer-code">{PROMO_CODE}</div>
-    <div style="font-size:15px;font-weight:600;">انسخ الكود وسجّل من الرابط للاستفادة من العرض.</div>
+    <div style="font-size:15px;font-weight:700; line-height:1.9;">
+        مهم: باش تستفيد من العرض، لازم تفتح التسجيل من الرابط الرسمي الموجود هنا،
+        وبعدها تدخل هذا البرومو كود أثناء إنشاء الحساب.
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
 col_offer1, col_offer2 = st.columns(2)
 with col_offer1:
-    st.link_button("فتح العرض", MAIN_AFFILIATE_LINK, use_container_width=True)
+    st.link_button("افتح التسجيل من هذا الرابط", MAIN_AFFILIATE_LINK, use_container_width=True)
 with col_offer2:
-    copy_button_component(PROMO_CODE, "نسخ البرومو كود")
+    copy_button_component(PROMO_CODE, "انسخ الكود قبل التسجيل")
 
 st.markdown("""
 <div class="disclosure">
-هذا الموقع يحتوي على روابط أفلييت. +18 فقط. العب بمسؤولية.
+هذا الموقع يحتوي على روابط أفلييت. للاستفادة من مكافأة التسجيل، استعمل الرابط الموجود هنا ثم أدخل البرومو كود أثناء إنشاء الحساب. +18 فقط. العب بمسؤولية.
 </div>
 """, unsafe_allow_html=True)
 
@@ -535,8 +538,8 @@ try:
                             <div style="background:#fff;padding:10px 12px;border-radius:10px;font-weight:800;text-align:center;">
                                 {PROMO_CODE}
                             </div>
-                            <div style="font-size:14px;margin-top:8px;">
-                                انسخ الكود وسجّل من الرابط للاستفادة من العرض.
+                            <div style="font-size:14px;margin-top:8px; line-height:1.8;">
+                                افتح التسجيل من الرابط أولًا، ثم أدخل هذا الكود أثناء إنشاء الحساب.
                             </div>
                         </div>
                         ''',
@@ -545,9 +548,9 @@ try:
 
                     mini1, mini2 = st.columns(2)
                     with mini1:
-                        st.link_button("فتح العرض الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
+                        st.link_button("افتح التسجيل الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
                     with mini2:
-                        copy_button_component(PROMO_CODE, "نسخ الكود")
+                        copy_button_component(PROMO_CODE, "انسخ الكود")
 
                 with tab2:
                     st.markdown(
