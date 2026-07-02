@@ -12,32 +12,29 @@ HEADERS = {"X-Auth-Token": API_TOKEN}
 PROMO_CODE = "GA3NERBHOU"
 MAIN_AFFILIATE_LINK = "https://refpa3665.com/L?tag=d_5731021m_59351c_&site=5731021&ad=59351"
 
+if "unlocked_matches" not in st.session_state:
+    st.session_state.unlocked_matches = {}
 
 st.markdown("""
 <style>
 html, body, [class*="css"] {
     direction: rtl;
 }
-
 .block-container {
     max-width: 1180px;
     padding-top: 1rem;
     padding-bottom: 2rem;
 }
-
 .main {
     background: #f6f8fb;
 }
-
-/* HERO */
 .hero {
-    background: linear-gradient(135deg, #0f172a 0%, #111827 55%, #1e293b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #111827 60%, #1e293b 100%);
     border-radius: 26px;
     padding: 28px;
     color: white;
     margin-bottom: 16px;
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-    border: 1px solid rgba(255,255,255,0.06);
 }
 .hero-badge {
     display: inline-block;
@@ -61,8 +58,6 @@ html, body, [class*="css"] {
     line-height: 1.9;
     max-width: 820px;
 }
-
-/* TRUST */
 .trust-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -82,8 +77,6 @@ html, body, [class*="css"] {
     color: #6b7280;
     line-height: 1.8;
 }
-
-/* OFFER */
 .offer-box {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     color: #111827;
@@ -91,7 +84,6 @@ html, body, [class*="css"] {
     padding: 22px;
     margin: 18px 0 12px 0;
     box-shadow: 0 14px 28px rgba(245, 158, 11, 0.24);
-    border: 1px solid rgba(255,255,255,0.35);
 }
 .offer-title {
     font-size: 30px;
@@ -119,7 +111,6 @@ html, body, [class*="css"] {
     font-weight: 700;
     line-height: 1.9;
 }
-
 .steps-box {
     background: #fff7ed;
     border: 1px solid #fdba74;
@@ -139,8 +130,6 @@ html, body, [class*="css"] {
     line-height: 1.9;
     margin-bottom: 4px;
 }
-
-/* SECTION */
 .section-title {
     font-size: 22px;
     font-weight: 900;
@@ -152,8 +141,6 @@ html, body, [class*="css"] {
     font-size: 14px;
     margin-bottom: 12px;
 }
-
-/* MATCH CARD */
 .match-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -190,8 +177,6 @@ html, body, [class*="css"] {
     font-size: 14px;
     margin-bottom: 5px;
 }
-
-/* BOXES */
 .info-box {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
@@ -205,21 +190,35 @@ html, body, [class*="css"] {
     color: #111827;
     margin-bottom: 6px;
 }
-.mini-offer {
-    background: #fff7ed;
+.lock-box {
+    background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
     border: 1px solid #fdba74;
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 16px;
-    margin-top: 12px;
+    margin-top: 14px;
 }
-.mini-offer-title {
+.lock-title {
     font-weight: 900;
     font-size: 18px;
-    margin-bottom: 6px;
     color: #9a3412;
+    margin-bottom: 6px;
 }
-
-/* COPY BUTTON */
+.lock-text {
+    font-size: 14px;
+    color: #7c2d12;
+    line-height: 1.9;
+    margin-bottom: 10px;
+}
+.preview-chip {
+    display: inline-block;
+    background: #111827;
+    color: white;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 8px;
+}
 .copy-btn-wrap {
     margin-top: 8px;
     margin-bottom: 8px;
@@ -235,16 +234,12 @@ html, body, [class*="css"] {
     font-weight: 800;
     cursor: pointer;
 }
-
-/* FOOTER NOTE */
 .disclosure {
     font-size: 12px;
     color: #4b5563;
     line-height: 1.9;
     margin-top: 10px;
 }
-
-/* METRICS TWEAK */
 [data-testid="stMetric"] {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -252,14 +247,10 @@ html, body, [class*="css"] {
     padding: 10px 12px;
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
 }
-
-/* BUTTONS */
 div.stButton > button {
     border-radius: 12px;
     font-weight: 800;
 }
-
-/* TABS */
 .stTabs [data-baseweb="tab-list"] {
     gap: 8px;
 }
@@ -270,7 +261,6 @@ div.stButton > button {
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 @st.cache_data(ttl=300)
 def api_get(endpoint, params=None):
@@ -283,12 +273,10 @@ def api_get(endpoint, params=None):
     response.raise_for_status()
     return response.json()
 
-
 @st.cache_data(ttl=300)
 def get_today_matches():
     data = api_get("/matches")
     return data.get("matches", [])
-
 
 @st.cache_data(ttl=1800)
 def get_team_finished_matches(team_id, limit=6):
@@ -298,18 +286,15 @@ def get_team_finished_matches(team_id, limit=6):
     )
     return data.get("matches", [])
 
-
 @st.cache_data(ttl=1800)
 def get_competition_standings(comp_code):
     if not comp_code:
         return []
-
     data = api_get(f"/competitions/{comp_code}/standings")
     standings = data.get("standings", [])
     if standings:
         return standings[0].get("table", [])
     return []
-
 
 def format_time(utc_date):
     try:
@@ -317,7 +302,6 @@ def format_time(utc_date):
         return dt.strftime("%Y-%m-%d %H:%M UTC")
     except Exception:
         return utc_date
-
 
 def extract_team_form(matches, team_id):
     played = 0
@@ -369,7 +353,6 @@ def extract_team_form(matches, team_id):
         "form_points": form_points
     }
 
-
 def calc_goal_markets(matches, team_id):
     played = 0
     over_15 = 0
@@ -416,7 +399,6 @@ def calc_goal_markets(matches, team_id):
         "btts_rate": round((btts_yes / played) * 100)
     }
 
-
 def pick_confidence_label(value):
     if value >= 75:
         return "عالية"
@@ -425,14 +407,12 @@ def pick_confidence_label(value):
     else:
         return "ضعيفة"
 
-
 def get_position(standings_table, team_id):
     for row in standings_table:
         team = row.get("team", {})
         if team.get("id") == team_id:
             return row.get("position"), row.get("points"), row.get("goalDifference")
     return None, None, None
-
 
 def analyze_match(match):
     home = match.get("homeTeam", {})
@@ -539,7 +519,6 @@ def analyze_match(match):
         "predictions": predictions
     }
 
-
 def get_stat(match, keys):
     current = match
     for key in keys:
@@ -548,7 +527,6 @@ def get_stat(match, keys):
         else:
             return None
     return current
-
 
 def copy_button_component(text_to_copy, button_text="نسخ الكود"):
     safe_text = text_to_copy.replace("\\", "\\\\").replace("'", "\\'")
@@ -563,14 +541,13 @@ def copy_button_component(text_to_copy, button_text="نسخ الكود"):
         height=55,
     )
 
-
 st.markdown("""
 <div class="hero">
     <div class="hero-badge">StatRadar AI</div>
-    <div class="hero-title">تحليلات مباريات اليوم بشكل أوضح وأكثر احترافية</div>
+    <div class="hero-title">تحليلات مباريات اليوم لكن التوصيات الكاملة تبقى للمسجلين</div>
     <div class="hero-sub">
-        اكتشف التوصية الأقوى، وشاهد توصيات إضافية مبنية على أداء الفرق في آخر المباريات،
-        مع واجهة أبسط وأوضح لتسهيل اتخاذ القرار.
+        شاهد مباريات اليوم، واكتشف وجود تحليل متاح، ثم افتح التسجيل واستفد من العرض
+        للحصول على الوصول الكامل للتوصيات.
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -580,21 +557,21 @@ with trust1:
     st.markdown("""
     <div class="trust-card">
         <div class="trust-title">تحليل مبني على بيانات</div>
-        <div class="trust-sub">نستخدم نتائج آخر المباريات، معدل التسجيل، واستقبال الأهداف لترتيب التوصيات.</div>
+        <div class="trust-sub">نستخدم نتائج آخر المباريات، معدل التسجيل، واستقبال الأهداف وترتيب الفرق.</div>
     </div>
     """, unsafe_allow_html=True)
 with trust2:
     st.markdown("""
     <div class="trust-card">
-        <div class="trust-title">توصيات متعددة</div>
-        <div class="trust-sub">التوصية الأقوى، أكثر من 1.5، أكثر من 2.5، وتسجيل كلا الفريقين في مكان واحد.</div>
+        <div class="trust-title">التوصيات الكاملة مقفولة</div>
+        <div class="trust-sub">المستخدم يشوف أن التحليل موجود، لكن الوصول الكامل يكون بعد التسجيل.</div>
     </div>
     """, unsafe_allow_html=True)
 with trust3:
     st.markdown("""
     <div class="trust-card">
-        <div class="trust-title">واجهة أسهل</div>
-        <div class="trust-sub">أسماء الفرق ظاهرة بوضوح، مع قراءة سريعة وسهلة لكل مباراة بدون تعقيد.</div>
+        <div class="trust-title">استفد من العرض</div>
+        <div class="trust-sub">انسخ البرومو كود وافتح التسجيل من الرابط الرسمي قبل مشاهدة التوصيات.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -604,7 +581,8 @@ st.markdown(f"""
     <div class="offer-sub">مكافأة التسجيل</div>
     <div class="offer-code">{PROMO_CODE}</div>
     <div class="offer-text">
-        باش تستفيد من العرض، افتح التسجيل من الرابط الرسمي الموجود هنا، ثم أدخل هذا البرومو كود أثناء إنشاء الحساب.
+        باش تدخل وتشوف التوصيات الكاملة، افتح التسجيل من الرابط الرسمي،
+        ثم أدخل هذا البرومو كود أثناء إنشاء الحساب.
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -617,7 +595,7 @@ with cta2:
 
 st.markdown("""
 <div class="steps-box">
-    <div class="steps-title">كيف تستفيد من العرض؟</div>
+    <div class="steps-title">كيف تدخل للتوصيات؟</div>
     <div class="step-line">1) افتح التسجيل من الرابط الرسمي.</div>
     <div class="step-line">2) انسخ البرومو كود.</div>
     <div class="step-line">3) أدخل الكود أثناء إنشاء الحساب.</div>
@@ -633,12 +611,12 @@ with st.expander("كيف نحسب التوصيات؟"):
 
 st.markdown("""
 <div class="disclosure">
-هذا الموقع يحتوي على روابط أفلييت. للاستفادة من مكافأة التسجيل، استعمل الرابط الموجود هنا ثم أدخل البرومو كود أثناء إنشاء الحساب. +18 فقط. العب بمسؤولية.
+هذا الموقع يحتوي على روابط أفلييت. للوصول إلى التوصيات الكاملة، استعمل الرابط الموجود هنا ثم أدخل البرومو كود أثناء إنشاء الحساب. +18 فقط. العب بمسؤولية.
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="section-title">مباريات اليوم</div>', unsafe_allow_html=True)
-st.markdown('<div class="soft-note">اختر أي مباراة لعرض التحليل الكامل والتوصيات المتاحة.</div>', unsafe_allow_html=True)
+st.markdown('<div class="soft-note">اضغط على أي مباراة وسترى معاينة فقط، أما التوصيات الكاملة فهي للمسجلين.</div>', unsafe_allow_html=True)
 
 try:
     matches = get_today_matches()
@@ -647,6 +625,7 @@ try:
         st.warning("لا توجد مباريات متاحة اليوم.")
     else:
         for match in matches:
+            match_id = str(match.get("id"))
             home = match.get("homeTeam", {}).get("name", "غير معروف")
             away = match.get("awayTeam", {}).get("name", "غير معروف")
             competition = match.get("competition", {}).get("name", "بطولة غير معروفة")
@@ -665,12 +644,54 @@ try:
             )
             st.markdown(f'<div class="meta-row">البطولة: {competition}</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="meta-row">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
+            st.markdown('<div class="preview-chip">تحليل متاح</div>', unsafe_allow_html=True)
 
-            if st.button("عرض التحليل", key=f"analyze_{match.get('id')}"):
+            if st.button("عرض المعاينة", key=f"preview_{match_id}"):
+                analysis = analyze_match(match)
+                top_pick = analysis["predictions"][0]
+
+                st.markdown(
+                    f'''
+                    <div class="info-box">
+                        <div class="info-title">معاينة سريعة</div>
+                        توجد توصيات متاحة لهذه المباراة، ومستوى الاهتمام الحالي: {analysis["confidence"]}%<br>
+                        التوصية الأقوى متاحة بعد فتح الوصول.
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
+
+                st.markdown(
+                    f'''
+                    <div class="lock-box">
+                        <div class="lock-title">🔒 التوصيات الكاملة مقفولة</div>
+                        <div class="lock-text">
+                            باش تشوف التوصية الأقوى مثل: <strong>{top_pick["title"]}</strong>،
+                            ونسبة الثقة، والقراءة الكاملة للمباراة، لازم تفتح التسجيل من الرابط
+                            وتدخل البرومو كود أثناء إنشاء الحساب.
+                        </div>
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
+
+                lock1, lock2 = st.columns([1.2, 1], gap="medium")
+                with lock1:
+                    st.link_button("افتح التسجيل الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
+                with lock2:
+                    copy_button_component(PROMO_CODE, "انسخ الكود")
+
+                if st.button("فتحت التوصيات", key=f"unlock_{match_id}"):
+                    st.session_state.unlocked_matches[match_id] = True
+                    st.rerun()
+
+            if st.session_state.unlocked_matches.get(match_id, False):
                 analysis = analyze_match(match)
                 top_pick = analysis["predictions"][0]
                 second_pick = analysis["predictions"][1]
                 third_pick = analysis["predictions"][2]
+
+                st.success("تم فتح التوصيات لهذه المباراة.")
 
                 tab1, tab2, tab3 = st.tabs(["الخلاصة", "أداء آخر المباريات", "إحصائيات المباراة"])
 
@@ -736,28 +757,6 @@ try:
                             ''',
                             unsafe_allow_html=True
                         )
-
-                    st.markdown(
-                        f'''
-                        <div class="mini-offer">
-                            <div class="mini-offer-title">استفد من العرض</div>
-                            <div style="font-weight:800;margin-bottom:8px;">مكافأة التسجيل</div>
-                            <div style="background:#fff;padding:10px 12px;border-radius:12px;font-weight:900;text-align:center;">
-                                {PROMO_CODE}
-                            </div>
-                            <div style="font-size:14px;margin-top:8px; line-height:1.8;">
-                                افتح التسجيل من الرابط أولًا، ثم أدخل هذا الكود أثناء إنشاء الحساب.
-                            </div>
-                        </div>
-                        ''',
-                        unsafe_allow_html=True
-                    )
-
-                    mini1, mini2 = st.columns([1.2, 1], gap="medium")
-                    with mini1:
-                        st.link_button("افتح التسجيل الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
-                    with mini2:
-                        copy_button_component(PROMO_CODE, "انسخ الكود")
 
                 with tab2:
                     st.markdown(
