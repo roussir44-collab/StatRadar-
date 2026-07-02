@@ -68,12 +68,6 @@ html, body, [class*="css"] {
     letter-spacing: 1px;
     margin-bottom: 14px;
 }
-.offer-note {
-    font-size: 14px;
-    color: #1f2937;
-    margin-top: 12px;
-    line-height: 1.7;
-}
 .match-card {
     background: white;
     border: 1px solid #e5e7eb;
@@ -243,6 +237,60 @@ def extract_team_form(matches, team_id):
         "form_points": form_points
     }
 
+def calc_goal_markets(matches, team_id):
+    played = 0
+    over_15 = 0
+    over_25 = 0
+    btts_yes = 0
+
+    for m in matches:
+        home_id = m.get("homeTeam", {}).get("id")
+        away_id = m.get("awayTeam", {}).get("id")
+        full = m.get("score", {}).get("fullTime", {})
+        hg = full.get("home")
+        ag = full.get("away")
+
+        if hg is None or ag is None:
+            continue
+
+        if home_id != team_id and away_id != team_id:
+            continue
+
+        total_goals = hg + ag
+        both_scored = hg > 0 and ag > 0
+
+        played += 1
+
+        if total_goals >= 2:
+            over_15 += 1
+        if total_goals >= 3:
+            over_25 += 1
+        if both_scored:
+            btts_yes += 1
+
+    if played == 0:
+        return {
+            "played": 0,
+            "over15_rate": 0,
+            "over25_rate": 0,
+            "btts_rate": 0
+        }
+
+    return {
+        "played": played,
+        "over15_rate": round((over_15 / played) * 100),
+        "over25_rate": round((over_25 / played) * 100),
+        "btts_rate": round((btts_yes / played) * 100)
+    }
+
+def pick_confidence_label(value):
+    if value >= 75:
+        return "عالية"
+    elif value >= 60:
+        return "متوسطة"
+    else:
+        return "ضعيفة"
+
 def get_position(standings_table, team_id):
     for row in standings_table:
         team = row.get("team", {})
@@ -265,6 +313,9 @@ def analyze_match(match):
 
     home_form = extract_team_form(home_matches, home_id)
     away_form = extract_team_form(away_matches, away_id)
+
+    home_markets = calc_goal_markets(home_matches, home_id)
+    away_markets = calc_goal_markets(away_matches, away_id)
 
     home_pos, home_pts, home_gd = get_position(standings, home_id)
     away_pos, away_pts, away_gd = get_position(standings, away_id)
@@ -298,15 +349,32 @@ def analyze_match(match):
     away_prob = max(5, min(80, round((away_strength / total) * 100)))
     draw_prob = max(10, 100 - home_prob - away_prob)
 
-    total_goals_signal = home_form["avg_for"] + away_form["avg_for"]
-    defensive_signal = home_form["avg_against"] + away_form["avg_against"]
+    over15_score = round((home_markets["over15_rate"] + away_markets["over15_rate"]) / 2)
+    over25_score = round((home_markets["over25_rate"] + away_markets["over25_rate"]) / 2)
+    btts_score = round((home_markets["btts_rate"] + away_markets["btts_rate"]) / 2)
 
-    if total_goals_signal >= 2.6 or defensive_signal >= 2.4:
-        goals_pick = "عدد الأهداف المتوقع: أكثر من 1.5 هدف"
-    elif total_goals_signal >= 1.8:
-        goals_pick = "عدد الأهداف المتوقع: أكثر من 1.5 هدف لكن بثقة متوسطة"
-    else:
-        goals_pick = "عدد الأهداف المتوقع: أقل من 3.5 هدف"
+    predictions = [
+        {
+            "title": "أكثر من 1.5 هدف",
+            "score": over15_score,
+            "confidence": pick_confidence_label(over15_score),
+            "reason": f"آخر مباريات {home.get('name')} و{away.get('name')} تُظهر معدلًا جيدًا لبلوغ هدفين أو أكثر."
+        },
+        {
+            "title": "أكثر من 2.5 هدف",
+            "score": over25_score,
+            "confidence": pick_confidence_label(over25_score),
+            "reason": "هناك مؤشرات على مباراة مفتوحة نسبيًا إذا استمر نفس نسق الأهداف الأخير."
+        },
+        {
+            "title": "تسجيل كلا الفريقين",
+            "score": btts_score,
+            "confidence": pick_confidence_label(btts_score),
+            "reason": "الفريقان أظهرا قابلية للتسجيل واستقبال الأهداف في آخر المباريات."
+        }
+    ]
+
+    predictions = sorted(predictions, key=lambda x: x["score"], reverse=True)
 
     home_name = home.get("name", "الفريق الأول")
     away_name = away.get("name", "الفريق الثاني")
@@ -322,7 +390,6 @@ def analyze_match(match):
 
     return {
         "winner_pick": winner_pick,
-        "goals_pick": goals_pick,
         "home_prob": home_prob,
         "draw_prob": draw_prob,
         "away_prob": away_prob,
@@ -332,7 +399,8 @@ def analyze_match(match):
         "home_pos": home_pos,
         "away_pos": away_pos,
         "home_pts": home_pts,
-        "away_pts": away_pts
+        "away_pts": away_pts,
+        "predictions": predictions
     }
 
 def get_stat(match, keys):
@@ -345,10 +413,11 @@ def get_stat(match, keys):
     return current
 
 def copy_button_component(text_to_copy, button_text="نسخ الكود"):
+    safe_text = text_to_copy.replace("'", "\\'")
     components.html(
         f"""
         <div class="copy-btn-wrap">
-            <button class="copy-button" onclick="navigator.clipboard.writeText('{text_to_copy}')">
+            <button class="copy-button" onclick="navigator.clipboard.writeText('{safe_text}')">
                 {button_text}
             </button>
         </div>
@@ -360,16 +429,16 @@ st.markdown("""
 <div class="hero">
     <div class="hero-title">⚽ StatRadar AI</div>
     <div class="hero-sub">
-        تابع مباريات اليوم، واطلع على قراءة أوضح للمباريات، واحصل على تحليلات مبسطة بشكل احترافي وسهل الفهم.
+        تابع مباريات اليوم، واكتشف التوصية الأقوى، وتوصيات إضافية مبنية على بيانات المباريات السابقة بشكل أوضح وأسهل.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <div class="offer-box">
     <div class="offer-title">استفد من العرض</div>
     <div class="offer-sub">مكافأة التسجيل</div>
-    <div class="offer-code">GA3NERBHOU</div>
+    <div class="offer-code">{PROMO_CODE}</div>
     <div style="font-size:15px;font-weight:600;">انسخ الكود وسجّل من الرابط للاستفادة من العرض.</div>
 </div>
 """, unsafe_allow_html=True)
@@ -411,6 +480,9 @@ try:
 
             if st.button("تحليل المباراة", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
+                top_pick = analysis["predictions"][0]
+                second_pick = analysis["predictions"][1]
+                third_pick = analysis["predictions"][2]
 
                 tab1, tab2, tab3 = st.tabs(["الخلاصة", "أداء آخر المباريات", "إحصائيات المباراة"])
 
@@ -421,15 +493,28 @@ try:
                     c3.metric(f"{away}", f"{analysis['away_prob']}%")
 
                     st.markdown(
-                        f'<div class="box"><div class="box-title">الخلاصة</div>{analysis["winner_pick"]}</div>',
+                        f'<div class="box"><div class="box-title">قراءة المباراة</div>{analysis["winner_pick"]}</div>',
                         unsafe_allow_html=True
                     )
+
                     st.markdown(
-                        f'<div class="box"><div class="box-title">توقع الأهداف</div>{analysis["goals_pick"]}</div>',
+                        f'<div class="box"><div class="box-title">التوصية الأقوى</div>'
+                        f'{top_pick["title"]} — مستوى الثقة: {top_pick["confidence"]} ({top_pick["score"]}%)<br>'
+                        f'{top_pick["reason"]}'
+                        f'</div>',
                         unsafe_allow_html=True
                     )
+
                     st.markdown(
-                        f'<div class="box"><div class="box-title">مستوى الثقة</div>{analysis["confidence"]}%</div>',
+                        f'<div class="box"><div class="box-title">توصيات إضافية</div>'
+                        f'1) {second_pick["title"]} — {second_pick["confidence"]} ({second_pick["score"]}%)<br>'
+                        f'2) {third_pick["title"]} — {third_pick["confidence"]} ({third_pick["score"]}%)'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">مستوى الثقة العام</div>{analysis["confidence"]}%</div>',
                         unsafe_allow_html=True
                     )
 
