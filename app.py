@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from datetime import datetime
 
-st.set_page_config(page_title="StatRadar AI", page_icon="⚽", layout="wide")
+st.set_page_config(page_title="ستات رادار AI", page_icon="⚽", layout="wide")
 
 API_TOKEN = st.secrets["FOOTBALL_DATA_API_KEY"]
 BASE_URL = "https://api.football-data.org/v4"
@@ -10,6 +10,9 @@ HEADERS = {"X-Auth-Token": API_TOKEN}
 
 st.markdown("""
     <style>
+    .main {
+        direction: rtl;
+    }
     .match-card {
         background: #f7f9fc;
         border: 1px solid #e6eaf1;
@@ -27,7 +30,7 @@ st.markdown("""
         margin-bottom: 8px;
     }
     .section-title {
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 800;
         margin-bottom: 8px;
     }
@@ -36,7 +39,12 @@ st.markdown("""
 
 @st.cache_data(ttl=300)
 def api_get(endpoint, params=None):
-    response = requests.get(f"{BASE_URL}{endpoint}", headers=HEADERS, params=params, timeout=20)
+    response = requests.get(
+        f"{BASE_URL}{endpoint}",
+        headers=HEADERS,
+        params=params,
+        timeout=20
+    )
     response.raise_for_status()
     return response.json()
 
@@ -47,7 +55,10 @@ def get_today_matches():
 
 @st.cache_data(ttl=1800)
 def get_team_finished_matches(team_id, limit=6):
-    data = api_get(f"/teams/{team_id}/matches", params={"status": "FINISHED", "limit": limit})
+    data = api_get(
+        f"/teams/{team_id}/matches",
+        params={"status": "FINISHED", "limit": limit}
+    )
     return data.get("matches", [])
 
 @st.cache_data(ttl=1800)
@@ -174,18 +185,21 @@ def analyze_match(match):
     defensive_signal = home_form["avg_against"] + away_form["avg_against"]
 
     if total_goals_signal >= 2.6 or defensive_signal >= 2.4:
-        goals_pick = "Over 1.5 goals looks strong"
+        goals_pick = "أوفر 1.5 يبدو قويًا"
     elif total_goals_signal >= 1.8:
-        goals_pick = "Over 1.5 goals looks possible"
+        goals_pick = "أوفر 1.5 ممكن"
     else:
-        goals_pick = "Under 3.5 goals looks safer"
+        goals_pick = "أندر 3.5 يبدو أكثر أمانًا"
+
+    home_name = home.get("name", "الفريق الأول")
+    away_name = away.get("name", "الفريق الثاني")
 
     if home_prob > away_prob + 8:
-        winner_pick = f"{home.get('name')} has the edge"
+        winner_pick = f"أفضلية نسبية لـ {home_name}"
     elif away_prob > home_prob + 8:
-        winner_pick = f"{away.get('name')} has the edge"
+        winner_pick = f"أفضلية نسبية لـ {away_name}"
     else:
-        winner_pick = "Match looks balanced"
+        winner_pick = "المباراة متوازنة نسبيًا"
 
     confidence = min(88, max(55, abs(home_prob - away_prob) + 52))
 
@@ -204,66 +218,76 @@ def analyze_match(match):
         "away_pts": away_pts
     }
 
-st.markdown('<div class="section-title">⚽ StatRadar AI</div>', unsafe_allow_html=True)
-st.caption("Today matches + real data-based analysis")
+def get_stat(match, keys):
+    current = match
+    for key in keys:
+        if isinstance(current, dict):
+            current = current.get(key)
+        else:
+            return None
+    return current
+
+st.markdown('<div class="section-title">⚽ ستات رادار AI</div>', unsafe_allow_html=True)
+st.caption("مباريات اليوم + تحليل مبني على بيانات حقيقية")
 
 try:
     matches = get_today_matches()
 
     if not matches:
-        st.warning("No matches found today.")
+        st.warning("لا توجد مباريات اليوم.")
     else:
-        st.success(f"API connected successfully. Matches found: {len(matches)}")
+        st.success(f"تم الاتصال بالـ API بنجاح. عدد المباريات: {len(matches)}")
 
         for match in matches:
-            home = match.get("homeTeam", {}).get("name", "Unknown")
-            away = match.get("awayTeam", {}).get("name", "Unknown")
-            competition = match.get("competition", {}).get("name", "Unknown Competition")
+            home = match.get("homeTeam", {}).get("name", "غير معروف")
+            away = match.get("awayTeam", {}).get("name", "غير معروف")
+            competition = match.get("competition", {}).get("name", "بطولة غير معروفة")
             utc_date = format_time(match.get("utcDate", ""))
-            status = match.get("status", "UNKNOWN")
+            status = match.get("status", "غير معروف")
 
             st.markdown('<div class="match-card">', unsafe_allow_html=True)
-            st.markdown(f'<div class="team-line">{home} vs {away}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">Competition: {competition}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">Kickoff: {utc_date}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">Status: {status}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="team-line">{home} × {away}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="small-muted">البطولة: {competition}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="small-muted">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="small-muted">الحالة: {status}</div>', unsafe_allow_html=True)
 
-            if st.button("Analyze", key=f"analyze_{match.get('id')}"):
+            corners_home = get_stat(match, ["statistics", "corners", "home"])
+            corners_away = get_stat(match, ["statistics", "corners", "away"])
+            yellow_home = get_stat(match, ["statistics", "yellowCards", "home"])
+            yellow_away = get_stat(match, ["statistics", "yellowCards", "away"])
+            shots_home = get_stat(match, ["statistics", "shotsOnTarget", "home"])
+            shots_away = get_stat(match, ["statistics", "shotsOnTarget", "away"])
+
+            st.write("**إحصائيات المباراة:**")
+            st.write(
+                f"- الركنيات: {home} {corners_home} | {away} {corners_away}"
+                if corners_home is not None and corners_away is not None
+                else "- الركنيات: غير متاحة في الخطة الحالية"
+            )
+            st.write(
+                f"- البطاقات الصفراء: {home} {yellow_home} | {away} {yellow_away}"
+                if yellow_home is not None and yellow_away is not None
+                else "- البطاقات الصفراء: غير متاحة في الخطة الحالية"
+            )
+            st.write(
+                f"- التسديدات على المرمى: {home} {shots_home} | {away} {shots_away}"
+                if shots_home is not None and shots_away is not None
+                else "- التسديدات على المرمى: غير متاحة في الخطة الحالية"
+            )
+
+            if st.button("تحليل المباراة", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
 
-                st.info(f"Prediction confidence: {analysis['confidence']}%")
-                st.write(f"**Match view:** {analysis['winner_pick']}")
-                st.write(f"**Goals view:** {analysis['goals_pick']}")
+                st.info(f"درجة الثقة: {analysis['confidence']}%")
+                st.write(f"**قراءة المباراة:** {analysis['winner_pick']}")
+                st.write(f"**قراءة الأهداف:** {analysis['goals_pick']}")
                 st.write(
-                    f"**Probabilities:** Home {analysis['home_prob']}% | "
-                    f"Draw {analysis['draw_prob']}% | Away {analysis['away_prob']}%"
+                    f"**الاحتمالات:** فوز {home} {analysis['home_prob']}% | "
+                    f"تعادل {analysis['draw_prob']}% | "
+                    f"فوز {away} {analysis['away_prob']}%"
                 )
 
-                st.write("**Recent form:**")
+                st.write("**فورمة آخر المباريات:**")
                 st.write(
-                    f"- Home: {analysis['home_form']['wins']}W / "
-                    f"{analysis['home_form']['draws']}D / {analysis['home_form']['losses']}L | "
-                    f"Scored avg {analysis['home_form']['avg_for']:.2f} | "
-                    f"Conceded avg {analysis['home_form']['avg_against']:.2f}"
-                )
-                st.write(
-                    f"- Away: {analysis['away_form']['wins']}W / "
-                    f"{analysis['away_form']['draws']}D / {analysis['away_form']['losses']}L | "
-                    f"Scored avg {analysis['away_form']['avg_for']:.2f} | "
-                    f"Conceded avg {analysis['away_form']['avg_against']:.2f}"
-                )
-
-                if analysis["home_pos"] and analysis["away_pos"]:
-                    st.write(
-                        f"**Standings:** Home #{analysis['home_pos']} ({analysis['home_pts']} pts) | "
-                        f"Away #{analysis['away_pos']} ({analysis['away_pts']} pts)"
-                    )
-
-            st.markdown('</div>', unsafe_allow_html=True)
-
-except requests.exceptions.HTTPError as e:
-    st.error(f"HTTP error: {e}")
-except requests.exceptions.RequestException as e:
-    st.error(f"Request error: {e}")
-except Exception as e:
-    st.error(f"Unexpected error: {e}")
+                    f"- {home}: {analysis['home_form']['wins']} فوز / "
+                    f"{analysis['home_form']['draws']} تعادل
