@@ -1,38 +1,153 @@
 import streamlit as st
 import requests
+import streamlit.components.v1 as components
 from datetime import datetime
 
-st.set_page_config(page_title="ستات رادار AI", page_icon="⚽", layout="wide")
+st.set_page_config(page_title="StatRadar AI", page_icon="⚽", layout="wide")
 
 API_TOKEN = st.secrets["FOOTBALL_DATA_API_KEY"]
 BASE_URL = "https://api.football-data.org/v4"
 HEADERS = {"X-Auth-Token": API_TOKEN}
 
+PROMO_CODE = "GA3NERBHOU"
+MAIN_AFFILIATE_LINK = "https://refpa3665.com/L?tag=d_5731021m_59351c_&site=5731021&ad=59351"
+
 st.markdown("""
 <style>
-.main {
+html, body, [class*="css"] {
     direction: rtl;
 }
-.match-card {
-    background: #f7f9fc;
-    border: 1px solid #e6eaf1;
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 16px;
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    max-width: 1200px;
 }
-.small-muted {
-    color: #6b7280;
-    font-size: 14px;
+.hero {
+    background: linear-gradient(135deg, #111827, #0f172a);
+    padding: 28px;
+    border-radius: 22px;
+    color: white;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
 }
-.team-line {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-.section-title {
-    font-size: 30px;
+.hero-title {
+    font-size: 34px;
     font-weight: 800;
     margin-bottom: 8px;
+}
+.hero-sub {
+    color: #d1d5db;
+    font-size: 15px;
+    line-height: 1.8;
+}
+.offer-box {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #111827;
+    border-radius: 20px;
+    padding: 22px;
+    margin: 18px 0 20px 0;
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+}
+.offer-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+.offer-sub {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+.offer-code {
+    background: rgba(255,255,255,0.75);
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+}
+.offer-note {
+    font-size: 14px;
+    color: #1f2937;
+    margin-top: 12px;
+    line-height: 1.7;
+}
+.match-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+.match-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #111827;
+}
+.meta {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+.box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+.box-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #111827;
+}
+.mini-offer {
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 12px;
+}
+.mini-offer-title {
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 6px;
+    color: #9a3412;
+}
+.copy-btn-wrap {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.copy-button {
+    background: #111827;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+}
+.disclosure {
+    font-size: 12px;
+    color: #4b5563;
+    margin-top: 10px;
+    line-height: 1.7;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -123,8 +238,6 @@ def extract_team_form(matches, team_id):
         "wins": wins,
         "draws": draws,
         "losses": losses,
-        "goals_for": goals_for,
-        "goals_against": goals_against,
         "avg_for": avg_for,
         "avg_against": avg_against,
         "form_points": form_points
@@ -157,15 +270,16 @@ def analyze_match(match):
     away_pos, away_pts, away_gd = get_position(standings, away_id)
 
     home_strength = (
-        home_form["form_points"] * 1.8
-        + home_form["avg_for"] * 2.2
-        - home_form["avg_against"] * 1.3
-        + 1.2
+        home_form["form_points"] * 1.8 +
+        home_form["avg_for"] * 2.2 -
+        home_form["avg_against"] * 1.3 +
+        1.2
     )
+
     away_strength = (
-        away_form["form_points"] * 1.8
-        + away_form["avg_for"] * 2.2
-        - away_form["avg_against"] * 1.3
+        away_form["form_points"] * 1.8 +
+        away_form["avg_for"] * 2.2 -
+        away_form["avg_against"] * 1.3
     )
 
     if home_pos and away_pos:
@@ -188,21 +302,21 @@ def analyze_match(match):
     defensive_signal = home_form["avg_against"] + away_form["avg_against"]
 
     if total_goals_signal >= 2.6 or defensive_signal >= 2.4:
-        goals_pick = "أوفر 1.5 يبدو قويًا"
+        goals_pick = "عدد الأهداف المتوقع: أكثر من 1.5 هدف"
     elif total_goals_signal >= 1.8:
-        goals_pick = "أوفر 1.5 ممكن"
+        goals_pick = "عدد الأهداف المتوقع: أكثر من 1.5 هدف لكن بثقة متوسطة"
     else:
-        goals_pick = "أندر 3.5 يبدو أكثر أمانًا"
+        goals_pick = "عدد الأهداف المتوقع: أقل من 3.5 هدف"
 
     home_name = home.get("name", "الفريق الأول")
     away_name = away.get("name", "الفريق الثاني")
 
     if home_prob > away_prob + 8:
-        winner_pick = f"أفضلية نسبية لـ {home_name}"
+        winner_pick = f"الأفضلية تميل إلى {home_name}"
     elif away_prob > home_prob + 8:
-        winner_pick = f"أفضلية نسبية لـ {away_name}"
+        winner_pick = f"الأفضلية تميل إلى {away_name}"
     else:
-        winner_pick = "المباراة متوازنة نسبيًا"
+        winner_pick = "المواجهة متقاربة"
 
     confidence = min(88, max(55, abs(home_prob - away_prob) + 52))
 
@@ -230,16 +344,57 @@ def get_stat(match, keys):
             return None
     return current
 
-st.markdown('<div class="section-title">⚽ ستات رادار AI</div>', unsafe_allow_html=True)
-st.caption("مباريات اليوم + تحليل مبني على بيانات حقيقية")
+def copy_button_component(text_to_copy, button_text="نسخ الكود"):
+    components.html(
+        f"""
+        <div class="copy-btn-wrap">
+            <button class="copy-button" onclick="navigator.clipboard.writeText('{text_to_copy}')">
+                {button_text}
+            </button>
+        </div>
+        """,
+        height=55,
+    )
+
+st.markdown("""
+<div class="hero">
+    <div class="hero-title">⚽ StatRadar AI</div>
+    <div class="hero-sub">
+        تابع مباريات اليوم، واطلع على قراءة أوضح للمباريات، واحصل على تحليلات مبسطة بشكل احترافي وسهل الفهم.
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="offer-box">
+    <div class="offer-title">استفد من العرض</div>
+    <div class="offer-sub">مكافأة التسجيل</div>
+    <div class="offer-code">GA3NERBHOU</div>
+    <div style="font-size:15px;font-weight:600;">انسخ الكود وسجّل من الرابط للاستفادة من العرض.</div>
+</div>
+""", unsafe_allow_html=True)
+
+col_offer1, col_offer2 = st.columns(2)
+with col_offer1:
+    st.link_button("فتح العرض", MAIN_AFFILIATE_LINK, use_container_width=True)
+with col_offer2:
+    copy_button_component(PROMO_CODE, "نسخ البرومو كود")
+
+st.markdown("""
+<div class="disclosure">
+هذا الموقع يحتوي على روابط أفلييت. +18 فقط. العب بمسؤولية.
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
 
 try:
     matches = get_today_matches()
 
     if not matches:
-        st.warning("لا توجد مباريات اليوم.")
+        st.warning("لا توجد مباريات متاحة اليوم.")
     else:
-        st.success(f"تم الاتصال بالـ API بنجاح. عدد المباريات: {len(matches)}")
+        st.info(f"عدد المباريات المتاحة اليوم: {len(matches)}")
 
         for match in matches:
             home = match.get("homeTeam", {}).get("name", "غير معروف")
@@ -249,70 +404,129 @@ try:
             status = match.get("status", "غير معروف")
 
             st.markdown('<div class="match-card">', unsafe_allow_html=True)
-            st.markdown(f'<div class="team-line">{home} × {away}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">البطولة: {competition}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="small-muted">الحالة: {status}</div>', unsafe_allow_html=True)
-
-            corners_home = get_stat(match, ["statistics", "corners", "home"])
-            corners_away = get_stat(match, ["statistics", "corners", "away"])
-            yellow_home = get_stat(match, ["statistics", "yellowCards", "home"])
-            yellow_away = get_stat(match, ["statistics", "yellowCards", "away"])
-            shots_home = get_stat(match, ["statistics", "shotsOnTarget", "home"])
-            shots_away = get_stat(match, ["statistics", "shotsOnTarget", "away"])
-
-            st.write("**إحصائيات المباراة:**")
-
-            if corners_home is not None and corners_away is not None:
-                st.write(f"- الركنيات: {home} {corners_home} | {away} {corners_away}")
-            else:
-                st.write("- الركنيات: غير متاحة في الخطة الحالية")
-
-            if yellow_home is not None and yellow_away is not None:
-                st.write(f"- البطاقات الصفراء: {home} {yellow_home} | {away} {yellow_away}")
-            else:
-                st.write("- البطاقات الصفراء: غير متاحة في الخطة الحالية")
-
-            if shots_home is not None and shots_away is not None:
-                st.write(f"- التسديدات على المرمى: {home} {shots_home} | {away} {shots_away}")
-            else:
-                st.write("- التسديدات على المرمى: غير متاحة في الخطة الحالية")
+            st.markdown(f'<div class="match-title">{home} × {away}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="meta">البطولة: {competition}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="meta">التوقيت: {utc_date}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="badge">الحالة: {status}</div>', unsafe_allow_html=True)
 
             if st.button("تحليل المباراة", key=f"analyze_{match.get('id')}"):
                 analysis = analyze_match(match)
 
-                st.info(f"درجة الثقة: {analysis['confidence']}%")
-                st.write(f"**قراءة المباراة:** {analysis['winner_pick']}")
-                st.write(f"**قراءة الأهداف:** {analysis['goals_pick']}")
-                st.write(
-                    f"**الاحتمالات:** فوز {home} {analysis['home_prob']}% | "
-                    f"تعادل {analysis['draw_prob']}% | "
-                    f"فوز {away} {analysis['away_prob']}%"
-                )
+                tab1, tab2, tab3 = st.tabs(["الخلاصة", "أداء آخر المباريات", "إحصائيات المباراة"])
 
-                st.write("**فورمة آخر المباريات:**")
+                with tab1:
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric(f"{home}", f"{analysis['home_prob']}%")
+                    c2.metric("تعادل", f"{analysis['draw_prob']}%")
+                    c3.metric(f"{away}", f"{analysis['away_prob']}%")
 
-                st.write(
-                    f"- {home}: {analysis['home_form']['wins']} فوز / "
-                    f"{analysis['home_form']['draws']} تعادل / "
-                    f"{analysis['home_form']['losses']} خسارة | "
-                    f"معدل التسجيل {analysis['home_form']['avg_for']:.2f} | "
-                    f"معدل استقبال الأهداف {analysis['home_form']['avg_against']:.2f}"
-                )
-
-                st.write(
-                    f"- {away}: {analysis['away_form']['wins']} فوز / "
-                    f"{analysis['away_form']['draws']} تعادل / "
-                    f"{analysis['away_form']['losses']} خسارة | "
-                    f"معدل التسجيل {analysis['away_form']['avg_for']:.2f} | "
-                    f"معدل استقبال الأهداف {analysis['away_form']['avg_against']:.2f}"
-                )
-
-                if analysis["home_pos"] and analysis["away_pos"]:
-                    st.write(
-                        f"**الترتيب:** {home} #{analysis['home_pos']} ({analysis['home_pts']} نقطة) | "
-                        f"{away} #{analysis['away_pos']} ({analysis['away_pts']} نقطة)"
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">الخلاصة</div>{analysis["winner_pick"]}</div>',
+                        unsafe_allow_html=True
                     )
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">توقع الأهداف</div>{analysis["goals_pick"]}</div>',
+                        unsafe_allow_html=True
+                    )
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">مستوى الثقة</div>{analysis["confidence"]}%</div>',
+                        unsafe_allow_html=True
+                    )
+
+                    if analysis["home_pos"] and analysis["away_pos"]:
+                        st.markdown(
+                            f'<div class="box"><div class="box-title">الترتيب الحالي</div>'
+                            f'{home}: المركز {analysis["home_pos"]} - {analysis["home_pts"]} نقطة<br>'
+                            f'{away}: المركز {analysis["away_pos"]} - {analysis["away_pts"]} نقطة'
+                            f'</div>',
+                            unsafe_allow_html=True
+                        )
+
+                    st.markdown(
+                        f'''
+                        <div class="mini-offer">
+                            <div class="mini-offer-title">استفد من العرض</div>
+                            <div style="font-weight:700;margin-bottom:8px;">مكافأة التسجيل</div>
+                            <div style="background:#fff;padding:10px 12px;border-radius:10px;font-weight:800;text-align:center;">
+                                {PROMO_CODE}
+                            </div>
+                            <div style="font-size:14px;margin-top:8px;">
+                                انسخ الكود وسجّل من الرابط للاستفادة من العرض.
+                            </div>
+                        </div>
+                        ''',
+                        unsafe_allow_html=True
+                    )
+
+                    mini1, mini2 = st.columns(2)
+                    with mini1:
+                        st.link_button("فتح العرض الآن", MAIN_AFFILIATE_LINK, use_container_width=True)
+                    with mini2:
+                        copy_button_component(PROMO_CODE, "نسخ الكود")
+
+                with tab2:
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">{home}</div>'
+                        f'فوز: {analysis["home_form"]["wins"]} | '
+                        f'تعادل: {analysis["home_form"]["draws"]} | '
+                        f'خسارة: {analysis["home_form"]["losses"]}<br>'
+                        f'معدل التسجيل: {analysis["home_form"]["avg_for"]:.2f}<br>'
+                        f'معدل استقبال الأهداف: {analysis["home_form"]["avg_against"]:.2f}'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+
+                    st.markdown(
+                        f'<div class="box"><div class="box-title">{away}</div>'
+                        f'فوز: {analysis["away_form"]["wins"]} | '
+                        f'تعادل: {analysis["away_form"]["draws"]} | '
+                        f'خسارة: {analysis["away_form"]["losses"]}<br>'
+                        f'معدل التسجيل: {analysis["away_form"]["avg_for"]:.2f}<br>'
+                        f'معدل استقبال الأهداف: {analysis["away_form"]["avg_against"]:.2f}'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+
+                with tab3:
+                    corners_home = get_stat(match, ["statistics", "corners", "home"])
+                    corners_away = get_stat(match, ["statistics", "corners", "away"])
+                    yellow_home = get_stat(match, ["statistics", "yellowCards", "home"])
+                    yellow_away = get_stat(match, ["statistics", "yellowCards", "away"])
+                    shots_home = get_stat(match, ["statistics", "shotsOnTarget", "home"])
+                    shots_away = get_stat(match, ["statistics", "shotsOnTarget", "away"])
+
+                    if corners_home is not None and corners_away is not None:
+                        st.markdown(
+                            f'<div class="box"><div class="box-title">الركنيات</div>{home}: {corners_home} | {away}: {corners_away}</div>',
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        st.markdown(
+                            '<div class="box"><div class="box-title">الركنيات</div>غير متاحة حاليًا</div>',
+                            unsafe_allow_html=True
+                        )
+
+                    if yellow_home is not None and yellow_away is not None:
+                        st.markdown(
+                            f'<div class="box"><div class="box-title">البطاقات الصفراء</div>{home}: {yellow_home} | {away}: {yellow_away}</div>',
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        st.markdown(
+                            '<div class="box"><div class="box-title">البطاقات الصفراء</div>غير متاحة حاليًا</div>',
+                            unsafe_allow_html=True
+                        )
+
+                    if shots_home is not None and shots_away is not None:
+                        st.markdown(
+                            f'<div class="box"><div class="box-title">التسديدات على المرمى</div>{home}: {shots_home} | {away}: {shots_away}</div>',
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        st.markdown(
+                            '<div class="box"><div class="box-title">التسديدات على المرمى</div>غير متاحة حاليًا</div>',
+                            unsafe_allow_html=True
+                        )
 
             st.markdown('</div>', unsafe_allow_html=True)
 
